@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/rdkcentral/Thunder/master/Tools/JsonGenerator/schemas/plugin.schema.json",
+    "info": {
+      "title": "AVPlayback Plugin",
+      "callsign": "org.rdk.AVPlayback",
+      "locator": "libWPEFrameworkAVPlayback.so",
+      "status": "production",
+      "description": "The `AVPlayback` plugin allows you to control the HDMI Composite on a set-top box",
+      "version": "1.0"
+    },
+    "interface": {
+      "$ref": "AVPlayback.json#"
+    }
+}

@@ -1,0 +1,9 @@
+{
+ "locator":"libWPEFrameworkAVPlayback.so",
+ "classname":"AVPlayback",
+ "precondition":[
+  "Platform"
+ ],
+ "callsign":"org.rdk.AVPlayback",
+ "autostart":false
+}
