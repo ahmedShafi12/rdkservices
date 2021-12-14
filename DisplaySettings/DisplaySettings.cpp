@@ -65,6 +65,7 @@ using namespace std;
 #define HDMICECSINK_SYSTEM_AUDIO_MODE_EVENT "setSystemAudioModeEvent"
 #define HDMICECSINK_AUDIO_DEVICE_CONNECTED_STATUS_EVENT "reportAudioDeviceConnectedStatus"
 #define HDMICECSINK_CEC_ENABLED_EVENT "reportCecEnabledEvent"
+#define AUDIO_OUTPUT_PORT_INITIALIZED     "audioPortsInitialized"
 #define SERVER_DETAILS  "127.0.0.1:9998"
 #define WARMING_UP_TIME_IN_SECONDS 5
 #define HDMICECSINK_PLUGIN_ACTIVATION_TIME 2
@@ -876,7 +877,27 @@ namespace WPEFramework {
 		    break;
            }
         }
-        
+/**
+* @brief This function is used to translate Audio outport initilization complete
+*  event.
+*
+* @param[in]. Audio output port state
+*/
+        void DisplaySettings::notifyAudioPortInitUpdate( dsAudioPortState_t audioPortState )
+        {
+            LOGWARN("AudioPortStat [%d]", audioPortState);
+
+            JsonObject params;
+
+            if(audioPortState == dsAUDIOPORT_STATE_INITIALIZED) {
+                params["status"] = "initialized";
+            }
+            else {
+                params["status"] = "uninitialized";
+            }
+            sendNotify(AUDIO_OUTPUT_PORT_INITIALIZED, params);
+        }
+
         void DisplaySettings::audioPortStateEventHandler(const char *owner, IARM_EventId_t eventId, void *data, size_t len)
         {
             dsAudioPortState_t audioPortState = dsAUDIOPORT_STATE_UNINITIALIZED;
@@ -898,6 +919,7 @@ namespace WPEFramework {
                   {
                      LOG_DEVICE_EXCEPTION0();
                   }
+                  DisplaySettings::_instance->notifyAudioPortInitUpdate(audioPortState);
                 }
                 break;
                 default:

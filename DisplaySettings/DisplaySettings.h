@@ -158,6 +158,7 @@ namespace WPEFramework {
 	    void onSystemAudioModeEventHandler(const JsonObject& parameters);
 	    void onAudioDeviceConnectedStatusEventHandler(const JsonObject& parameters);
 	    void onCecEnabledEventHandler(const JsonObject& parameters);
+            void notifyAudioPortInitUpdate(dsAudioPortState_t audioPortState);
             //End events
         public:
             DisplaySettings();
