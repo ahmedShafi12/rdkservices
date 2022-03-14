@@ -313,15 +313,30 @@ namespace WPEFramework {
                     }
                     catch (const device::Exception& err){
                         LOG_DEVICE_EXCEPTION1(string("HDMI_ARC0"));
-                    } 
+                    }
+                   
+                    bool AudioPortInit = vPort.isAudioPortInitHandled();
+                    LOGWARN("%s: Audio Port : [HDMI_ARC0] enable: %d \n",__func__,AudioPortInit); 
                     if (portName == "HDMI_ARC0") {
-                        //Set audio port config. ARC will be set up by onTimer()		
-                        if(isPortPersistenceValEnabled &&  m_hdmiCecAudioDeviceDetected) { 
-                            m_audioOutputPortConfig["HDMI_ARC"] = true;
+
+                        if( AudioPortInit ) {
+                            //Set audio port config. ARC will be set up by onTimer()		
+                            if(isPortPersistenceValEnabled &&  m_hdmiCecAudioDeviceDetected) { 
+                                m_audioOutputPortConfig["HDMI_ARC"] = true;
+                            }
+                            else {
+                                m_audioOutputPortConfig["HDMI_ARC"] = false;
+                            }
+                        } else {
+                             //Set audio port config. ARC will be set up by onTimer()>--->-------
+                            if( isPortPersistenceValEnabled ) {
+                                m_audioOutputPortConfig["HDMI_ARC"] = true;
+                            }
+                            else {
+                                m_audioOutputPortConfig["HDMI_ARC"] = false;
+                            }
                         }
-                        else {
-                            m_audioOutputPortConfig["HDMI_ARC"] = false;
-                        }
+       
 
                         //Stop timer if its already running
                         if(m_timer.isActive()) {
@@ -411,13 +426,21 @@ namespace WPEFramework {
   
                         aPortHdmiEnableParam.Set(_T("audioPort"), portName); //aPortHdmiEnableParam.Set(_T("audioPort"),"HDMI0");
                         //Get value from ds srv persistence
-                        if(isPortPersistenceValEnabled || !m_hdmiCecAudioDeviceDetected) {
-                            aPortHdmiEnableParam.Set(_T("enable"),true);
+                        if( AudioPortInit ) {
+                            if(isPortPersistenceValEnabled || !m_hdmiCecAudioDeviceDetected) {
+                               aPortHdmiEnableParam.Set(_T("enable"),true);
+                            }
+                            else {
+                               aPortHdmiEnableParam.Set(_T("enable"),false);
+                            }
+                        } else {
+                             if(isPortPersistenceValEnabled ) {
+                               aPortHdmiEnableParam.Set(_T("enable"),true);
+                             }
+                             else {
+                               aPortHdmiEnableParam.Set(_T("enable"),false);
+                            } 
                         }
-                        else {
-                            aPortHdmiEnableParam.Set(_T("enable"),false);
-                        }
-
                         ret = setEnableAudioPort (aPortHdmiEnableParam, aPortHdmiEnableResult);
 
                         if(ret != Core::ERROR_NONE) {
