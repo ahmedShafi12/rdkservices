@@ -4361,7 +4361,7 @@ namespace WPEFramework {
                         device::AudioOutputPort aPort = device::Host::getInstance().getAudioOutputPort("HDMI_ARC0");
                         JsonObject aPortConfig;
                         aPortConfig = getAudioOutputPortConfig();
-			if(m_hdmiInAudioDeviceConnected ==  false) {
+			if(m_hdmiInAudioDeviceConnected ==  false && aPort.isConnected()) {
                             m_hdmiInAudioDeviceConnected = true;
 			    connectedAudioPortUpdated(dsAUDIOPORT_TYPE_HDMI_ARC, true);
 			}
