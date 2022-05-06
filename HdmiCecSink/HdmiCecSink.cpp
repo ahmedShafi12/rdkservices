@@ -471,6 +471,8 @@ namespace WPEFramework
            printHeader(header);
            if(!HdmiCecSink::_instance)
 	     return;
+           if(strcmp(msg.physicalAddress.toString().c_str(), "2.0.0.0"))
+             return;
            HdmiCecSink::_instance->Process_TerminateArc();
        }
        void HdmiCecSinkProcessor::process (const ReportShortAudioDescriptor  &msg, const Header &header)
