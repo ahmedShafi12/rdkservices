@@ -460,11 +460,20 @@ namespace WPEFramework
 
        void HdmiCecSinkProcessor::process (const InitiateArc &msg, const Header &header)
        {
+            PhysicalAddress physical_addr_invalid = {0x0F,0x0F,0x0F,0x0F};
+            PhysicalAddress physical_addr_arc_port = {0x02,0x00,0x00,0x00}; 
             printHeader(header);
             LOGINFO("Command: INITIATE_ARC \n");
-            if(!HdmiCecSink::_instance)
+            if(!HdmiCecSink::_instance) 
 	    return;
-            HdmiCecSink::_instance->Process_InitiateArc();	
+            if((_instance->deviceList[0x5].m_physicalAddr.toString() == physical_addr_arc_port.toString() ) 
+               && (_instance->deviceList[0x5].m_physicalAddr.toString() == physical_addr_invalid.toString())){
+                      LOGINFO("Command: INITIATE_ARC InitiateArc success %s : %s  : %s \n",GetOpName(msg.opCode()),msg.physicalAddress.name().c_str(),msg.physicalAddress.toString().c_str());
+                     HdmiCecSink::_instance->Process_InitiateArc();
+            }else {
+                LOGINFO("Command: INITIATE_ARC InitiateArc ignore %s : %s  : %s \n",GetOpName(msg.opCode()),msg.physicalAddress.name().c_str(),msg.physicalAddress.toString().c_str());
+            }
+           
        }  
        void HdmiCecSinkProcessor::process (const TerminateArc &msg, const Header &header)
        {
