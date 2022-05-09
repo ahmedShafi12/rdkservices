@@ -442,17 +442,24 @@ namespace WPEFramework
 
        void HdmiCecSinkProcessor::process (const InitiateArc &msg, const Header &header)
        {
+            PhysicalAddress physical_addr_invalid = {0x0F,0x0F,0x0F,0x0F};
+            PhysicalAddress physical_addr_arc_port = {0x02,0x00,0x00,0x00}; 
             printHeader(header);
             LOGINFO("Command: INITIATE_ARC \n");
-            if(!HdmiCecSink::_instance)
+            if(!HdmiCecSink::_instance) 
 	    return;
-            HdmiCecSink::_instance->Process_InitiateArc();	
+            if((_instance->deviceList[0x5].m_physicalAddr.toString() != physical_addr_arc_port.toString() ) 
+               && (_instance->deviceList[0x5].m_physicalAddr.toString() != physical_addr_invalid.toString())){
+                     HdmiCecSink::_instance->Process_InitiateArc();
+            }
        }  
        void HdmiCecSinkProcessor::process (const TerminateArc &msg, const Header &header)
        {
            printHeader(header);
            if(!HdmiCecSink::_instance)
 	     return;
+           if(strcmp(msg.physicalAddress.toString().c_str(), "2.0.0.0"))
+             return;
            HdmiCecSink::_instance->Process_TerminateArc();
        }
        void HdmiCecSinkProcessor::process (const ReportShortAudioDescriptor  &msg, const Header &header)
